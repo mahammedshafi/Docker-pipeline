@@ -1,105 +1,135 @@
-# 🐳 Dockerized Application Deployment Pipeline
-
-A Docker-based CI/CD pipeline integrated with Jenkins — containerizes a Java web app, pushes to DockerHub, and deploys on AWS EC2. Reduced environment setup time by **30%**.
+# 🚀 Docker CI/CD Pipeline (Step-by-Step Implementation)
 
 ## 📌 Project Overview
 
-Eliminates configuration drift across environments using Docker containers. Automates image build, versioning, registry push, and EC2 deployment via Jenkins.
+This project demonstrates a complete CI/CD pipeline where a Java application is built, containerized using Docker, pushed to DockerHub, and deployed on AWS EC2.
 
-## 🏗️ Architecture
+---
 
-```
-GitHub Push → Jenkins Pipeline
-                    ↓
-            Docker Build & Test
-                    ↓
-            Push to DockerHub
-                    ↓
-         SSH Deploy to AWS EC2
-         (docker run / compose up)
-```
+## 🔄 Pipeline Flow
 
-## 🛠️ Tools & Technologies
+GitHub → Jenkins → Docker Build → DockerHub → AWS EC2 Deployment
 
-| Tool | Purpose |
-|------|---------|
-| Docker | Containerization |
-| Dockerfile | Image definition (multi-stage) |
-| Docker Compose | Multi-container orchestration |
-| Jenkins | CI/CD automation |
-| DockerHub | Container registry |
-| AWS EC2 | Deployment host |
+---
+
+## 🛠 Tools & Technologies
+
+* GitHub (Source Code)
+* Jenkins (CI/CD Automation)
+* Docker (Containerization)
+* DockerHub (Image Registry)
+* AWS EC2 (Deployment Server)
+
+---
 
 ## 📁 Project Structure
 
-```
-2-docker-pipeline/
-├── Dockerfile               # Multi-stage Docker build
-├── docker-compose.yml       # Multi-container setup (app + db + nginx)
-├── Jenkinsfile              # CI/CD pipeline
-├── nginx.conf               # Reverse proxy config
-├── init.sql                 # DB initialization script
-├── pom.xml                  # Maven build file
-├── src/                     # Application source
-└── README.md
-```
+Jenkinsfile → Pipeline automation
+Dockerfile → Application container setup
+app/ → Application source code
 
-## ⚙️ Setup Instructions
+---
 
-### Step 1 — Clone & Configure
-```bash
-git clone https://github.com/<your-username>/2-docker-pipeline.git
-cd 2-docker-pipeline
-```
+## ⚙️ Step-by-Step Implementation
 
-### Step 2 — Build & Run Locally
-```bash
-# Build image
-docker build -t myapp:latest .
+### 🔹 Step 1: Setup AWS EC2 Server
 
-# Run with Docker Compose (app + database + nginx)
-docker-compose up -d
+* Launch EC2 instance (Ubuntu)
+* Install Docker:
+  sudo apt update
+  sudo apt install docker.io -y
+* Start Docker:
+  sudo systemctl start docker
+* Add user to docker group:
+  sudo usermod -aG docker ubuntu
 
-# Check running containers
-docker ps
+---
 
-# View logs
-docker-compose logs -f webapp
-```
+### 🔹 Step 2: Install Jenkins
 
-### Step 3 — Access Application
-```
-http://localhost:8080
-```
+* Install Java:
+  sudo apt install openjdk-11-jdk -y
+* Install Jenkins:
+  sudo apt install jenkins -y
+* Start Jenkins:
+  sudo systemctl start jenkins
 
-### Step 4 — Jenkins Pipeline Setup
-1. Add DockerHub credentials: `dockerhub-credentials`
-2. Add EC2 SSH key: `ec2-ssh-key`
-3. Update `EC2_SERVER` in Jenkinsfile
-4. Create Jenkins Pipeline job pointing to this repo
+---
 
-## 🔧 Useful Docker Commands
+### 🔹 Step 3: Configure Jenkins
 
-```bash
-# Build with build number tag
-docker build -t mahammedshafi/myapp:42 .
+* Open Jenkins in browser (port 8080)
+* Install suggested plugins
+* Add GitHub & DockerHub credentials
+* Create new pipeline job
 
-# Push to DockerHub
-docker push mahammedshafi/myapp:42
+---
 
-# Run with port mapping
-docker run -d -p 8080:8080 --name myapp mahammedshafi/myapp:latest
+### 🔹 Step 4: Setup GitHub Webhook
 
-# Container health check
-docker inspect --format='{{.State.Health.Status}}' myapp
+* Go to GitHub repo → Settings → Webhooks
+* Add Jenkins URL:
+  http://<your-ec2-ip>:8080/github-webhook/
 
-# Stop and remove all
-docker-compose down -v
-```
+---
 
-## 📊 Results
+### 🔹 Step 5: Create Dockerfile
 
-- ✅ 30% faster environment setup — no more "works on my machine"
-- ✅ Versioned Docker images on DockerHub per build
-- ✅ Zero config drift across dev/staging/production
-- ✅ Multi-container orchestration with service discovery
+* Define base image
+* Copy application files
+* Expose port
+* Run application
+
+---
+
+### 🔹 Step 6: Write Jenkins Pipeline (Jenkinsfile)
+
+Pipeline stages:
+
+* Clone code from GitHub
+* Build Docker image
+* Tag image
+* Push to DockerHub
+* Deploy container on EC2
+
+---
+
+### 🔹 Step 7: Build & Push Docker Image
+
+* Build image:
+  docker build -t your-image-name .
+* Push to DockerHub:
+  docker push your-image-name
+
+---
+
+### 🔹 Step 8: Deploy Container
+
+* Pull image from DockerHub:
+  docker pull your-image-name
+* Run container:
+  docker run -d -p 8080:8080 your-image-name
+
+---
+
+## 📷 Proof of Execution
+
+(Add screenshots here)
+
+* Jenkins pipeline success
+* Docker image build logs
+* Running container output
+
+---
+
+## 🎯 Key Outcomes
+
+* Automated Docker build & deployment
+* Faster application delivery
+* Consistent environment using containers
+
+---
+
+## 🚀 Conclusion
+
+This project simulates a real-world DevOps pipeline where applications are containerized and deployed automatically using CI/CD tools.
